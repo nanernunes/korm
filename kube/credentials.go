@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -48,7 +49,21 @@ type ServiceAccountCredential struct {
 }
 
 func (s ServiceAccountCredential) Login(address string) (*kubernetes.Clientset, error) {
-	return nil, nil
+
+	config := &rest.Config{
+		Host:        address,
+		BearerToken: s.Token,
+		TLSClientConfig: rest.TLSClientConfig{
+			Insecure: true,
+		},
+	}
+
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return clientset, nil
 }
 
 type UserPasswordCredential struct {
