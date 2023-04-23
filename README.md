@@ -138,7 +138,7 @@ func main() {
                     },
                 },
             },
-        }
+        },
     }
 
     k8s.Create(&deployment)
